@@ -2,9 +2,10 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <Link href="/addressbook">Address Book</Link>
-      
-    </div>
+    <main className="p-6 flex min-h-screen flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold">
+        Address Book Application
+      </h1>
+    </main>
   );
 }
