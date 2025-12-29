@@ -14,6 +14,8 @@ npx prisma migrate dev --name init
 # Run this in your terminal to generate your Prisma Client
 npx prisma generate
 
+修改表头
+npx prisma migrate dev --name add-contact
 
 
 在 Next.js 中创建 API 路由，测试数据库增删改查
