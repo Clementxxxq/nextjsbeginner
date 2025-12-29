@@ -1,27 +1,21 @@
-## 安装并初始化Prisma
-# 安装Prisma的工具和客户端
-npm install prisma tsx --save-dev
-npm install @prisma/extension-accelerate @prisma/client dotenv
+1. Install Prisma and initialize the project.
+    npm install prisma @prisma/client
+    npx prisma init
 
-# 运行初始化命令
-npx prisma init --db --output ../app/generated/prisma
 
-会在项目里生成 prisma/目录 schema.prisma和.env文件 准备好prisma client 的输出目录（例如app/generated/prisma）
+配置数据库Prisma Cloud
 
-## 定义数据库模型
-打开 prisma/schema.prisma，写入你要的数据模型。比如：
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
-}
+定义数据模型（Prisma schema）
 
-model Post {
-  id      Int    @id @default(autoincrement())
-  title   String
-  content String?
-}
-这一步是你数据库结构的“蓝图”。
 
-## 配置和生成 Prisma Client
+# Run this in your terminal to migrate your database
+npx prisma migrate dev --name init
+
+# Run this in your terminal to generate your Prisma Client
+npx prisma generate
+
+
+
+在 Next.js 中创建 API 路由，测试数据库增删改查
+
+再做前端输入框、列表展示等
