@@ -1,12 +1,13 @@
 # Address Book Web Application
 
-This is a learning project for building an address book application using
+This is a project for building an address book application using
 **Next.js**, **Prisma**, and **Prisma Cloud**.
 
 At the moment, the project focuses on **project setup, deployment, and database connection**.
 The API and CRUD features are planned and listed as TODO.
 
-[nextjsbeginner - Overview – Vercel](https://vercel.com/quan-xias-projects/nextjsbeginner)
+🌐 Live Demo
+👉 https://nextjsbeginner.vercel.app/
 
 ---
 
@@ -105,5 +106,12 @@ model Contact {
 - [ ] Delete contact
 - [ ] Basic UI improvements
 
-
 ---
+
+## 🧠 What I Learned
+
+- How to create and structure a Next.js project
+- How to deploy a website using Vercel
+- How to connect a cloud database using Prisma
+- How frontend, backend, and database work together
+- How to plan a project step by step instead of building everything at once
