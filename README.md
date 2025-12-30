@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Address Book Web Application
 
-## Getting Started
+This is a learning project for building an address book application using
+**Next.js**, **Prisma**, and **Prisma Cloud**.
 
-First, run the development server:
+At the moment, the project focuses on **project setup, deployment, and database connection**.
+The API and CRUD features are planned and listed as TODO.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+[nextjsbeginner - Overview – Vercel](https://vercel.com/quan-xias-projects/nextjsbeginner)
+
+---
+
+## 🚀 Tech Stack
+
+- **Next.js** – Frontend framework
+- **Node.js**
+- **TypeScript**
+- **Prisma ORM**
+- **Prisma Cloud** – Cloud database
+- **Vercel** – Deployment platform
+
+---
+
+## ✅ What Has Been Completed
+
+### 1️⃣ Project Initialization
+
+- Created a new **Next.js project**
+- Installed required dependencies
+- Verified the project runs locally
+
+---
+
+### 2️⃣ Frontend Setup
+
+- Modified the default **homepage**
+- Cleaned unused boilerplate code
+- Prepared the project structure for future features
+
+---
+
+### 3️⃣ Deployment (Vercel)
+
+- Connected the project to **Vercel**
+- Successfully deployed the website
+- The application is live at:
+
+👉 **https://vercel.com/** (deployment platform)
+
+> Automatic deployment is triggered on every push to the repository.
+
+---
+
+### 4️⃣ Prisma Setup
+
+- Installed **Prisma**
+- Initialized Prisma in the project
+- Created the Prisma schema
+
+---
+
+### 5️⃣ Prisma Cloud Database
+
+- Connected the project to **Prisma Cloud**
+- Configured environment variables:
+  - `DATABASE_URL`
+- Generated Prisma Client successfully
+
+---
+
+### 6️⃣ Database Model
+
+The `Contact` model has been defined as follows:
+
+```prisma
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  email     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 ```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ TODO (In Progress / Planned)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [x] ~~Create Next.js project~~
+- [x] ~~Deploy to Vercel~~
+- [x] ~~Connect Prisma + Cloud DB~~
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [ ] Create RESTful API routes
+- [ ] Connect API routes to Prisma Client
+- [ ] Implement CRUD operations
+  - [ ] Create contact
+  - [ ] Read contacts
+  - [ ] Update contact
+  - [ ] Delete contact
 
-## Learn More
+- [ ] Contact list page
+- [ ] Add contact form
+- [ ] Edit contact
+- [ ] Delete contact
+- [ ] Basic UI improvements
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
