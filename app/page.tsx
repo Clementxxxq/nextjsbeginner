@@ -160,6 +160,7 @@ export default function Home() {
                       Edit
                     </Button>
                     <Button
+                      size="sm"
                       variant="destructive"
                       onClick={() => {
                         setDeletingId(c.id);
