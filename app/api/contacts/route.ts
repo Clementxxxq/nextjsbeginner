@@ -36,6 +36,7 @@ export async function POST(request: Request) {
         name,
         email,
         phone,
+       address: body.address || null,
       },
     });
 
