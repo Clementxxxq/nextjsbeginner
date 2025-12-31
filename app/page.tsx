@@ -50,7 +50,6 @@ export default function Home() {
         return;
       }
 
-      // 成功，刷新列表
       fetchContacts();
       setShowAddDialog(false);
       setName('');
@@ -70,6 +69,7 @@ export default function Home() {
       <table className="w-full border-collapse border border-gray-300 mt-4">
         <thead>
           <tr className="bg-gray-100">
+             <th className="border border-gray-300 px-4 py-2">ID</th>
             <th className="border border-gray-300 px-4 py-2">Name</th>
             <th className="border border-gray-300 px-4 py-2">Phone</th>
             <th className="border border-gray-300 px-4 py-2">Email</th>
@@ -79,6 +79,7 @@ export default function Home() {
         <tbody>
           {contacts.map((contact) => (
             <tr key={contact.id}>
+              <td className="border border-gray-300 px-4 py-2">{contact.id}</td>
               <td className="border border-gray-300 px-4 py-2">{contact.name}</td>
               <td className="border border-gray-300 px-4 py-2">{contact.phone}</td>
               <td className="border border-gray-300 px-4 py-2">{contact.email}</td>
