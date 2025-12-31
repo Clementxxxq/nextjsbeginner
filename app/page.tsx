@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import ContactDialog, { ContactFormData } from "@/components/ContactDialog";
+import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
 import { useEffect, useState } from "react";
 
 type Contact = {
@@ -13,102 +15,104 @@ type Contact = {
 
 export default function Home() {
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  const [mode, setMode] = useState<"add" | "edit">("add");
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [error, setError] = useState("");
+  const [initialData, setInitialData] = useState<ContactFormData | undefined>();
 
   const fetchContacts = async () => {
-    const res = await fetch("/api/contacts");
-    const data = await res.json();
-    setContacts(data);
+    try {
+      setLoading(true);
+      const res = await fetch("/api/contacts");
+      if (res.ok) {
+        setContacts(await res.json());
+      }
+    } catch (error) {
+      console.error("Failed to fetch contacts:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchContacts();
   }, []);
 
-  const handleAdd = async () => {
-    setError("");
-    if (!name) {
-      setError("Name is required");
-      return;
-    }
+  const openAddDialog = () => {
+    setMode("add");
+    setEditingId(null);
+    setInitialData(undefined);
+    setDialogOpen(true);
+  };
 
+  const openEditDialog = (contact: Contact) => {
+    setMode("edit");
+    setEditingId(contact.id);
+    setInitialData({
+      name: contact.name,
+      phone: contact.phone,
+      email: contact.email ?? "",
+      address: contact.address ?? "",
+    });
+    setDialogOpen(true);
+  };
+
+  const openDeleteDialog = (id: number) => {
+    setDeletingId(id);
+    setDeleteOpen(true);
+  };
+
+  const handleSubmit = async (data: ContactFormData) => {
     try {
-      const res = await fetch("/api/contacts", {
-        method: "POST",
+      const url =
+        mode === "add" ? "/api/contacts" : `/api/contacts/${editingId}`;
+      const method = mode === "add" ? "POST" : "PUT";
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, address }),
+        body: JSON.stringify(data),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Failed to add contact");
-        return;
+      if (res.ok) {
+        setDialogOpen(false);
+        fetchContacts();
       }
-
-      fetchContacts();
-      setShowAddDialog(false);
-      setName("");
-      setEmail("");
-      setPhone("");
-      setAddress("");
-    } catch {
-      setError("Network error");
+    } catch (error) {
+      console.error("Failed to save contact:", error);
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this contact?")) return;
+  const confirmDelete = async (id: number) => {
+    if (deletingId == null) return;
 
     try {
-      const res = await fetch(`/api/contacts/${id}`, {
+      const res = await fetch(`/api/contacts/${deletingId}`, {
         method: "DELETE",
       });
-
       if (!res.ok) {
-        const data = await res.json();
-        alert(data.error || "Failed to delete contact");
-        return;
-      }
-
-      fetchContacts();
-    } catch {
-      alert("Network error");
-    }
-  };
-
-  const handleEdit = async () => {
-    if (editingId === null) return;
-
-    try {
-      const res = await fetch(`/api/contacts/${editingId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, address }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Failed to edit contact");
+        alert("Failed to delete contact");
         return;
       }
       fetchContacts();
-      setShowEditDialog(false);
-      setEditingId(null);
+      setDeleteOpen(false);
+      setDeletingId(null);
     } catch {
-      alert("Network error");
+      alert("Network error while deleting contact");
     }
   };
 
   return (
     <main className="p-6 max-w-2xl mx-auto">
       <h1 className="text-4xl font-bold mb-4">Address Book</h1>
-      <table className="w-full border-collapse border border-gray-300 mt-4">
+
+      <Button onClick={openAddDialog}>Add Contact</Button>
+
+      <table className="w-full border border-gray-300 mt-4">
         <thead>
           <tr className="bg-gray-100">
             <th className="border border-gray-300 px-4 py-2">ID</th>
@@ -117,141 +121,73 @@ export default function Home() {
             <th className="border border-gray-300 px-4 py-2">Email</th>
             <th className="border border-gray-300 px-4 py-2">Address</th>
             <th className="border border-gray-300 px-4 py-2">Actions</th>
-            {/* Add an Actions column */}
           </tr>
         </thead>
         <tbody>
-          {contacts.map((contact) => (
-            <tr key={contact.id}>
-              <td className="border border-gray-300 px-4 py-2">{contact.id}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                {contact.name}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {contact.phone}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {contact.email}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {contact.address}
-              </td>
-              <td className="border border-gray-300 px-4 py-2 flex gap-2">
-                <Button
-                  onClick={() => {
-                    setEditingId(contact.id);
-                    setName(contact.name);
-                    setEmail(contact.email || "");
-                    setPhone(contact.phone);
-                    setAddress(contact.address || "");
-                    setShowEditDialog(true);
-                  }}
-                >
-                  Edit
-                </Button>
-
-                <Button
-                  variant="destructive"
-                  onClick={() => handleDelete(contact.id)}
-                >
-                  Delete
-                </Button>
+          {loading ? (
+            <tr>
+              <td
+                colSpan={6}
+                className="border border-gray-300 px-4 py-8 text-center"
+              >
+                Loading...
               </td>
             </tr>
-          ))}
+          ) : contacts.length === 0 ? (
+            <tr>
+              <td
+                colSpan={6}
+                className="border border-gray-300 px-4 py-8 text-center text-gray-500"
+              >
+                No contacts found. Add your first contact!
+              </td>
+            </tr>
+          ) : (
+            contacts.map((c) => (
+              <tr key={c.id}>
+                <td className="border border-gray-300 px-4 py-2">{c.id}</td>
+                <td className="border border-gray-300 px-4 py-2">{c.name}</td>
+                <td className="border border-gray-300 px-4 py-2">{c.phone}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {c.email || "-"}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {c.address || "-"}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={() => openEditDialog(c)}>
+                      Edit
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      onClick={() => {
+                        setDeletingId(c.id);
+                        setDeleteOpen(true);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
-      <Button onClick={() => setShowAddDialog(true)}>Add Contact</Button>
 
-      {showAddDialog && (
-        <div className="border p-4 mt-4">
-          <h2 className="text-xl font-bold mb-2">Add Contact</h2>
-          {error && <p className="text-red-500 mb-2">{error}</p>}
-          <div className="mb-2">
-            <label className="block">Name:</label>
-            <input
-              className="border p-1 w-full"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-          <div className="mb-2">
-            <label className="block">Email:</label>
-            <input
-              className="border p-1 w-full"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="mb-2">
-            <label className="block">Phone:</label>
-            <input
-              className="border p-1 w-full"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </div>
-          <div className="mb-2">
-            <label className="block">Address:</label>
-            <input
-              className="border p-1 w-full"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={handleAdd}>Confirm</Button>
-            <Button onClick={() => setShowAddDialog(false)}>Cancel</Button>
-          </div>
-        </div>
-      )}
-
-      {showEditDialog && (
-        <div className="border p-4 mt-4">
-          <h2 className="text-xl font-bold mb-2">Edit Contact</h2>
-
-          <div className="mb-2">
-            <label className="block">Name:</label>
-            <input
-              className="border p-1 w-full"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div className="mb-2">
-            <label className="block">Email:</label>
-            <input
-              className="border p-1 w-full"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <div className="mb-2">
-            <label className="block">Phone:</label>
-            <input
-              className="border p-1 w-full"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </div>
-
-          <div className="mb-2">
-            <label className="block">Address:</label>
-            <input
-              className="border p-1 w-full"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-          </div>
-
-          <div className="flex gap-2">
-            <Button onClick={handleEdit}>Confirm</Button>
-            <Button onClick={() => setShowEditDialog(false)}>Cancel</Button>
-          </div>
-        </div>
-      )}
+      <ContactDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSubmit={handleSubmit}
+        initialData={initialData}
+        mode={mode}
+      />
+      <DeleteConfirmDialog
+        open={deleteOpen}
+        onCancel={() => setDeleteOpen(false)}
+        onConfirm={() => confirmDelete(deletingId!)}
+      />
     </main>
   );
 }
