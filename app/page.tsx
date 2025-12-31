@@ -107,76 +107,85 @@ export default function Home() {
   };
 
   return (
-    <main className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-4xl font-bold mb-4">Address Book</h1>
+    <main className="p-6 max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Address Book</h1>
+        <Button onClick={openAddDialog}>+ Add Contact</Button>
+      </div>
 
-      <Button onClick={openAddDialog}>Add Contact</Button>
+      {/* Table Card */}
+      <div className="overflow-hidden rounded-lg border bg-white shadow-sm">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50 text-gray-600">
+            <tr>
+              <th className="px-4 py-3 text-left w-12">No.</th>
+              <th className="px-4 py-3 text-left">Name</th>
+              <th className="px-4 py-3 text-left">Phone</th>
+              <th className="px-4 py-3 text-left">Email</th>
+              <th className="px-4 py-3 text-left">Address</th>
+              <th className="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
 
-      <table className="w-full border border-gray-300 mt-4">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2">ID</th>
-            <th className="border border-gray-300 px-4 py-2">Name</th>
-            <th className="border border-gray-300 px-4 py-2">Phone</th>
-            <th className="border border-gray-300 px-4 py-2">Email</th>
-            <th className="border border-gray-300 px-4 py-2">Address</th>
-            <th className="border border-gray-300 px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <tr>
-              <td
-                colSpan={6}
-                className="border border-gray-300 px-4 py-8 text-center"
-              >
-                Loading...
-              </td>
-            </tr>
-          ) : contacts.length === 0 ? (
-            <tr>
-              <td
-                colSpan={6}
-                className="border border-gray-300 px-4 py-8 text-center text-gray-500"
-              >
-                No contacts found. Add your first contact!
-              </td>
-            </tr>
-          ) : (
-            contacts.map((c) => (
-              <tr key={c.id}>
-                <td className="border border-gray-300 px-4 py-2">{c.id}</td>
-                <td className="border border-gray-300 px-4 py-2">{c.name}</td>
-                <td className="border border-gray-300 px-4 py-2">{c.phone}</td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {c.email || "-"}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {c.address || "-"}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={() => openEditDialog(c)}>
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => {
-                        setDeletingId(c.id);
-                        setDeleteOpen(true);
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </div>
+          <tbody className="divide-y">
+            {loading ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-4 py-10 text-center text-gray-500"
+                >
+                  Loading...
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : contacts.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-4 py-10 text-center text-gray-400"
+                >
+                  No contacts found. Add your first contact!
+                </td>
+              </tr>
+            ) : (
+              contacts.map((c, index) => (
+                <tr key={c.id} className="hover:bg-gray-50 transition">
+                  <td className="px-4 py-3 text-gray-500">{index + 1}</td>
+                  <td className="px-4 py-3 font-medium">{c.name}</td>
+                  <td className="px-4 py-3">{c.phone}</td>
+                  <td className="px-4 py-3 text-gray-600">{c.email || "-"}</td>
+                  <td className="px-4 py-3 text-gray-600">
+                    {c.address || "-"}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-2 justify-end">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openEditDialog(c)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => {
+                          setDeletingId(c.id);
+                          setDeleteOpen(true);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
+      {/* Dialogs */}
       <ContactDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

@@ -60,7 +60,7 @@ export default function ContactDialog({
   }, [initialData, open]);
 
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (error) setError(""); // 清除错误信息
   };
 
@@ -103,7 +103,10 @@ export default function ContactDialog({
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Name *</label>
+            <label className="block text-sm font-medium mb-1">
+              Name <span className="text-red-500">*</span>
+            </label>
+
             <input
               className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter name"
@@ -147,11 +150,19 @@ export default function ContactDialog({
         </div>
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={handleClose} disabled={isSubmitting}>
+          <Button
+            variant="outline"
+            onClick={handleClose}
+            disabled={isSubmitting}
+          >
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : mode === "add" ? "Add Contact" : "Save Changes"}
+            {isSubmitting
+              ? "Saving..."
+              : mode === "add"
+              ? "Add Contact"
+              : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>
