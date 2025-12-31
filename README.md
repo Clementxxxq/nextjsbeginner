@@ -7,7 +7,7 @@ At the moment, the project focuses on **project setup, deployment, and database 
 The API and CRUD features are planned and listed as TODO.
 
 🌐 Live Demo
-👉 https://nextjsbeginner.vercel.app/
+👉 https://nextjsbeginner-swart.vercel.app//
 
 ---
 
