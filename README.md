@@ -101,9 +101,10 @@ model Contact {
   - [x] ~~Delete contact~~
 
 - [x] ~~Contact list page~~
-- [ ] Add contact form
+- [x] ~~Add contact form~~
 - [ ] Edit contact
-- [ ] Delete contact
+- [x] ~~Delete contact~~
+- [ ] Reset auto-increment ID
 - [ ] Basic UI improvements
 
 ---

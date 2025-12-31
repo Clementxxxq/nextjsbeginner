@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 type Contact = {
   id: number;
@@ -14,14 +14,14 @@ type Contact = {
 export default function Home() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [error, setError] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [error, setError] = useState("");
 
   const fetchContacts = async () => {
-    const res = await fetch('/api/contacts');
+    const res = await fetch("/api/contacts");
     const data = await res.json();
     setContacts(data);
   };
@@ -31,33 +31,53 @@ export default function Home() {
   }, []);
 
   const handleAdd = async () => {
-    setError('');
+    setError("");
     if (!name) {
-      setError('Name is required');
+      setError("Name is required");
       return;
     }
 
     try {
-      const res = await fetch('/api/contacts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, phone, address }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Failed to add contact');
+        setError(data.error || "Failed to add contact");
         return;
       }
 
       fetchContacts();
       setShowAddDialog(false);
-      setName('');
-      setEmail('');
-      setPhone('');
-      setAddress('');
+      setName("");
+      setEmail("");
+      setPhone("");
+      setAddress("");
     } catch {
-      setError('Network error');
+      setError("Network error");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this contact?")) return;
+
+    try {
+      const res = await fetch(`/api/contacts/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || "Failed to delete contact");
+        return;
+      }
+
+      fetchContacts();
+    } catch {
+      alert("Network error");
     }
   };
 
@@ -65,25 +85,42 @@ export default function Home() {
     <main className="p-6 max-w-2xl mx-auto">
       <h1 className="text-4xl font-bold mb-4">Address Book</h1>
       <Button onClick={() => setShowAddDialog(true)}>Add Contact</Button>
-
       <table className="w-full border-collapse border border-gray-300 mt-4">
         <thead>
           <tr className="bg-gray-100">
-             <th className="border border-gray-300 px-4 py-2">ID</th>
+            <th className="border border-gray-300 px-4 py-2">ID</th>
             <th className="border border-gray-300 px-4 py-2">Name</th>
             <th className="border border-gray-300 px-4 py-2">Phone</th>
             <th className="border border-gray-300 px-4 py-2">Email</th>
             <th className="border border-gray-300 px-4 py-2">Address</th>
+            <th className="border border-gray-300 px-4 py-2">Actions</th>{/* Add an Actions column */}
           </tr>
         </thead>
         <tbody>
           {contacts.map((contact) => (
             <tr key={contact.id}>
               <td className="border border-gray-300 px-4 py-2">{contact.id}</td>
-              <td className="border border-gray-300 px-4 py-2">{contact.name}</td>
-              <td className="border border-gray-300 px-4 py-2">{contact.phone}</td>
-              <td className="border border-gray-300 px-4 py-2">{contact.email}</td>
-              <td className="border border-gray-300 px-4 py-2">{contact.address}</td>
+              <td className="border border-gray-300 px-4 py-2">
+                {contact.name}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {contact.phone}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {contact.email}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {contact.address}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                <Button 
+                  variant="destructive" 
+                  size="sm"
+                  onClick={() => handleDelete(contact.id)}
+                >
+                  Delete
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
