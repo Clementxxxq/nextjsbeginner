@@ -92,15 +92,15 @@ model Contact {
 - [x] ~~Deploy to Vercel~~
 - [x] ~~Connect Prisma + Cloud DB~~
 
-- [x] Create RESTful API routes
-- [x] Connect API routes to Prisma Client
-- [x] Implement CRUD operations
-  - [x] Create contact
-  - [x] Read contacts
-  - [x] Update contact
-  - [x] Delete contact
+- [x] ~~Create RESTful API routes~~
+- [x] ~~Connect API routes to Prisma Client~~
+- [x] ~~Implement CRUD operations~~
+  - [x] ~~Create contact~~
+  - [x] ~~Read contacts~~
+  - [x] ~~Update contact~~
+  - [x] ~~Delete contact~~
 
-- [ ] Contact list page
+- [x] ~~Contact list page~~
 - [ ] Add contact form
 - [ ] Edit contact
 - [ ] Delete contact
