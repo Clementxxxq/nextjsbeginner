@@ -14,6 +14,8 @@ type Contact = {
 export default function Home() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -81,10 +83,31 @@ export default function Home() {
     }
   };
 
+  const handleEdit = async () => {
+    if (editingId === null) return;
+
+    try {
+      const res = await fetch(`/api/contacts/${editingId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, phone, address }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to edit contact");
+        return;
+      }
+      fetchContacts();
+      setShowEditDialog(false);
+      setEditingId(null);
+    } catch {
+      alert("Network error");
+    }
+  };
+
   return (
     <main className="p-6 max-w-2xl mx-auto">
       <h1 className="text-4xl font-bold mb-4">Address Book</h1>
-      <Button onClick={() => setShowAddDialog(true)}>Add Contact</Button>
       <table className="w-full border-collapse border border-gray-300 mt-4">
         <thead>
           <tr className="bg-gray-100">
@@ -93,7 +116,8 @@ export default function Home() {
             <th className="border border-gray-300 px-4 py-2">Phone</th>
             <th className="border border-gray-300 px-4 py-2">Email</th>
             <th className="border border-gray-300 px-4 py-2">Address</th>
-            <th className="border border-gray-300 px-4 py-2">Actions</th>{/* Add an Actions column */}
+            <th className="border border-gray-300 px-4 py-2">Actions</th>
+            {/* Add an Actions column */}
           </tr>
         </thead>
         <tbody>
@@ -112,10 +136,22 @@ export default function Home() {
               <td className="border border-gray-300 px-4 py-2">
                 {contact.address}
               </td>
-              <td className="border border-gray-300 px-4 py-2">
-                <Button 
-                  variant="destructive" 
-                  size="sm"
+              <td className="border border-gray-300 px-4 py-2 flex gap-2">
+                <Button
+                  onClick={() => {
+                    setEditingId(contact.id);
+                    setName(contact.name);
+                    setEmail(contact.email || "");
+                    setPhone(contact.phone);
+                    setAddress(contact.address || "");
+                    setShowEditDialog(true);
+                  }}
+                >
+                  Edit
+                </Button>
+
+                <Button
+                  variant="destructive"
                   onClick={() => handleDelete(contact.id)}
                 >
                   Delete
@@ -125,6 +161,7 @@ export default function Home() {
           ))}
         </tbody>
       </table>
+      <Button onClick={() => setShowAddDialog(true)}>Add Contact</Button>
 
       {showAddDialog && (
         <div className="border p-4 mt-4">
@@ -165,6 +202,53 @@ export default function Home() {
           <div className="flex gap-2">
             <Button onClick={handleAdd}>Confirm</Button>
             <Button onClick={() => setShowAddDialog(false)}>Cancel</Button>
+          </div>
+        </div>
+      )}
+
+      {showEditDialog && (
+        <div className="border p-4 mt-4">
+          <h2 className="text-xl font-bold mb-2">Edit Contact</h2>
+
+          <div className="mb-2">
+            <label className="block">Name:</label>
+            <input
+              className="border p-1 w-full"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-2">
+            <label className="block">Email:</label>
+            <input
+              className="border p-1 w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-2">
+            <label className="block">Phone:</label>
+            <input
+              className="border p-1 w-full"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-2">
+            <label className="block">Address:</label>
+            <input
+              className="border p-1 w-full"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <Button onClick={handleEdit}>Confirm</Button>
+            <Button onClick={() => setShowEditDialog(false)}>Cancel</Button>
           </div>
         </div>
       )}

@@ -102,11 +102,13 @@ model Contact {
 
 - [x] ~~Contact list page~~
 - [x] ~~Add contact form~~
-- [ ] Edit contact
+- [x] ~~Edit contact~~
 - [x] ~~Delete contact~~
 - [ ] Reset auto-increment ID
 - [ ] Basic UI improvements
-
+- [ ] Contact list pagination
+- [ ] Search function
+- [ ] API tests
 ---
 
 ## 🧠 What I Learned
