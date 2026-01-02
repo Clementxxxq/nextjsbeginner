@@ -92,7 +92,14 @@ export default function Home() {
 
       if (res.ok) {
         setDialogOpen(false);
-        fetchContacts(searchQuery, page);
+        if (mode === "add") {
+          // anticipate one more item and jump to last page
+          const newTotal = total + 1;
+          const lastPage = Math.max(1, Math.ceil(newTotal / limit));
+          setPage(lastPage);
+        } else {
+          fetchContacts(searchQuery, page);
+        }
       }
     } catch (error) {
       console.error("Failed to save contact:", error);
