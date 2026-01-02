@@ -112,17 +112,29 @@ export default function Home() {
   };
 
   const confirmDelete = async (id: number) => {
-    if (deletingId == null) return;
+    const contactId = id ?? deletingId;
+    if (contactId == null) return;
 
     try {
-      const res = await fetch(`/api/contacts/${deletingId}`, {
+      const res = await fetch(`/api/contacts/${contactId}`, {
         method: "DELETE",
       });
       if (!res.ok) {
         alert("Failed to delete contact");
         return;
       }
-      fetchContacts(searchQuery, page);
+
+      // adjust pagination: if deleting the only item on the last page,
+      // move to previous page so the UI isn't left empty
+      const newTotal = Math.max(0, total - 1);
+      const lastPage = Math.max(1, Math.ceil(newTotal / limit));
+
+      if (page > lastPage) {
+        setPage(lastPage);
+      } else {
+        fetchContacts(searchQuery, page);
+      }
+
       setDeleteOpen(false);
       setDeletingId(null);
     } catch {
@@ -206,7 +218,7 @@ export default function Home() {
                         size="sm"
                         variant="destructive"
                         onClick={() => {
-                          setDeletingId(c.id);
+                        {'<'}
                           setDeleteOpen(true);
                         }}
                       >
@@ -221,13 +233,13 @@ export default function Home() {
         </table>
       </div>
       {/* Pagination */}
-      <div className="flex justify-center items-center mt-6 gap-4">
+      <div className="flex justify-center items-center mt-8 gap-4">
         <Button
           variant="outline"
           disabled={page === 1}
           onClick={() => setPage(page - 1)}
         >
-          Previous
+          {'<'}
         </Button>
 
         <span className="text-sm text-gray-600">
@@ -239,7 +251,7 @@ export default function Home() {
           disabled={page >= Math.ceil(total / limit)}
           onClick={() => setPage(page + 1)}
         >
-          Next
+          {'>'}
         </Button>
       </div>
 
