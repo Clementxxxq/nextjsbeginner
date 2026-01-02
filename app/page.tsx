@@ -20,21 +20,28 @@ export default function Home() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const limit = 5;
 
   const [mode, setMode] = useState<"add" | "edit">("add");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [initialData, setInitialData] = useState<ContactFormData | undefined>();
 
-  const fetchContacts = async (query: string = "") => {
+  const fetchContacts = async (query: string = "", pageNum: number = 1) => {
     try {
       setLoading(true);
       const url = new URL("/api/contacts", window.location.origin);
       if (query) {
         url.searchParams.append("query", query);
       }
+      url.searchParams.append("page", pageNum.toString());
+      url.searchParams.append("limit", limit.toString());
       const res = await fetch(url.toString());
       if (res.ok) {
-        setContacts(await res.json());
+        const data = await res.json();
+        setContacts(data.contacts);
+        setTotal(data.total);
       }
     } catch (error) {
       console.error("Failed to fetch contacts:", error);
@@ -44,8 +51,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    fetchContacts(searchQuery, page);
+  }, [searchQuery, page]);
 
   const openAddDialog = () => {
     setMode("add");
@@ -94,7 +101,7 @@ export default function Home() {
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
-    fetchContacts(value);
+    setPage(1);
   };
 
   const confirmDelete = async (id: number) => {
@@ -118,8 +125,7 @@ export default function Home() {
 
   return (
     <main className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Contact Management</h1>
-      
+      <h1 className="text-3xl font-bold mb-6">Address Book</h1>
       <div className="mb-6 flex gap-2">
         <input
           type="text"
@@ -132,8 +138,7 @@ export default function Home() {
       </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-      </div>
+      <div className="flex items-center justify-between mb-6"></div>
 
       {/* Table Card */}
       <div className="overflow-hidden rounded-lg border bg-white shadow-sm">
@@ -152,26 +157,22 @@ export default function Home() {
           <tbody className="divide-y">
             {loading ? (
               <tr>
-                <td
-                  colSpan={6}
-                  className="px-4 py-10 text-center text-gray-500"
-                >
+                <td colSpan={6} className="px-4 py-10 text-center text-gray-500">
                   Loading...
                 </td>
               </tr>
             ) : contacts.length === 0 ? (
               <tr>
-                <td
-                  colSpan={6}
-                  className="px-4 py-10 text-center text-gray-400"
-                >
+                <td colSpan={6} className="px-4 py-10 text-center text-gray-400">
                   No contacts found. Add your first contact!
                 </td>
               </tr>
             ) : (
               contacts.map((c, index) => (
                 <tr key={c.id} className="hover:bg-gray-50 transition">
-                  <td className="px-4 py-3 text-gray-500">{index + 1}</td>
+                  <td className="px-4 py-3 text-gray-500">
+                    {(page - 1) * limit + index + 1}
+                  </td>
                   <td className="px-4 py-3 font-medium">{c.name}</td>
                   <td className="px-4 py-3">{c.phone}</td>
                   <td className="px-4 py-3 text-gray-600">{c.email || "-"}</td>
@@ -204,6 +205,27 @@ export default function Home() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center items-center mt-6 gap-2">
+        <Button
+          variant="outline"
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+        >
+          Preview
+        </Button>
+        <span>
+          Page {page} of {Math.max(1, Math.ceil(total / limit))}
+        </span>
+        <Button
+          variant="outline"
+          disabled={page >= Math.ceil(total / limit)}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </Button>
       </div>
 
       {/* Dialogs */}

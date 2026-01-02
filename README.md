@@ -106,8 +106,8 @@ model Contact {
 - [x] ~~Delete contact~~
 - [x] Reset auto-increment ID
 - [x] Basic UI improvements
-- [ ] Contact list pagination
-- [ ] Search function
+- [x] ~~Contact list pagination~~
+- [x] ~~Search function~~
 - [ ] API tests
 ---
 

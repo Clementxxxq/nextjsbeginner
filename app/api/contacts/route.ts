@@ -4,25 +4,46 @@ import prisma from "@/lib/prisma";
 /**
  * Get /api/contacts
  * @returns A list of contacts ordered by creation date in descending order.
- * @param query - Optional search query to filter by name or phone
+ * Supports pagination and search by name or phone.
  */
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get("query");
 
-    const contacts = await prisma.contact.findMany({
-      where: query
-        ? {
-            OR: [
-              { name: { contains: query, mode: "insensitive" } },
-              { phone: { contains: query, mode: "insensitive" } },
-            ],
-          }
-        : {},
-      orderBy: { createdAt: "asc" },// Changed to ascending order
-    });
-    return NextResponse.json(contacts);
+    const query = searchParams.get("query") ?? "";
+    const page = Number(searchParams.get("page") ?? 1);
+    const limit = Number(searchParams.get("limit") ?? 5);
+
+    const where = query
+      ? {
+          OR: [
+            {
+              name: {
+                contains: query,
+                mode: "insensitive" as const,
+              },
+            },
+            {
+              phone: {
+                contains: query,
+                mode: "insensitive" as const,
+              },
+            },
+          ],
+        }
+      : {};
+
+    const [contacts, total] = await Promise.all([
+      prisma.contact.findMany({
+        where,
+        orderBy: { createdAt: "asc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.contact.count({ where }),
+    ]);
+
+    return NextResponse.json({ contacts, total });
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch contacts" },
@@ -30,6 +51,7 @@ export async function GET(request: Request) {
     );
   }
 }
+
 /**
  * post /api/contacts
  * @returns The newly created contact.
