@@ -19,15 +19,20 @@ export default function Home() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [mode, setMode] = useState<"add" | "edit">("add");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [initialData, setInitialData] = useState<ContactFormData | undefined>();
 
-  const fetchContacts = async () => {
+  const fetchContacts = async (query: string = "") => {
     try {
       setLoading(true);
-      const res = await fetch("/api/contacts");
+      const url = new URL("/api/contacts", window.location.origin);
+      if (query) {
+        url.searchParams.append("query", query);
+      }
+      const res = await fetch(url.toString());
       if (res.ok) {
         setContacts(await res.json());
       }
@@ -80,11 +85,16 @@ export default function Home() {
 
       if (res.ok) {
         setDialogOpen(false);
-        fetchContacts();
+        fetchContacts(searchQuery);
       }
     } catch (error) {
       console.error("Failed to save contact:", error);
     }
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    fetchContacts(value);
   };
 
   const confirmDelete = async (id: number) => {
@@ -98,7 +108,7 @@ export default function Home() {
         alert("Failed to delete contact");
         return;
       }
-      fetchContacts();
+      fetchContacts(searchQuery);
       setDeleteOpen(false);
       setDeletingId(null);
     } catch {
@@ -108,10 +118,21 @@ export default function Home() {
 
   return (
     <main className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Contact Management</h1>
+      
+      <div className="mb-6 flex gap-2">
+        <input
+          type="text"
+          placeholder="Search by name or phone number..."
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <Button onClick={openAddDialog}>+ Add Contact</Button>
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Address Book</h1>
-        <Button onClick={openAddDialog}>+ Add Contact</Button>
       </div>
 
       {/* Table Card */}

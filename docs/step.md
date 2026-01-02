@@ -3,10 +3,9 @@
     npx prisma init
 
 
-配置数据库Prisma Cloud
+Configure the Prisma Cloud database
 
-定义数据模型（Prisma schema）
-
+Define the data model (Prisma schema)
 
 # Run this in your terminal to migrate your database
 npx prisma migrate dev --name init
@@ -14,10 +13,9 @@ npx prisma migrate dev --name init
 # Run this in your terminal to generate your Prisma Client
 npx prisma generate
 
-修改表头
+Modify the table header
 npx prisma migrate dev --name add-contact
 
+Create API routes in Next.js and test database CRUD operations
 
-在 Next.js 中创建 API 路由，测试数据库增删改查
-
-再做前端输入框、列表展示等
+Further implement front-end features such as input fields and list displays.

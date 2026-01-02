@@ -104,8 +104,8 @@ model Contact {
 - [x] ~~Add contact form~~
 - [x] ~~Edit contact~~
 - [x] ~~Delete contact~~
-- [ ] Reset auto-increment ID
-- [ ] Basic UI improvements
+- [x] Reset auto-increment ID
+- [x] Basic UI improvements
 - [ ] Contact list pagination
 - [ ] Search function
 - [ ] API tests
