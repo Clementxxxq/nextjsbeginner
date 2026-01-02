@@ -92,7 +92,7 @@ export default function Home() {
 
       if (res.ok) {
         setDialogOpen(false);
-        fetchContacts(searchQuery);
+        fetchContacts(searchQuery, page);
       }
     } catch (error) {
       console.error("Failed to save contact:", error);
@@ -115,7 +115,7 @@ export default function Home() {
         alert("Failed to delete contact");
         return;
       }
-      fetchContacts(searchQuery);
+      fetchContacts(searchQuery, page);
       setDeleteOpen(false);
       setDeletingId(null);
     } catch {
