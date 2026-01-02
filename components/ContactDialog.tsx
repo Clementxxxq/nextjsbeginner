@@ -8,7 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type ContactFormData = {
   name: string;
@@ -40,15 +40,16 @@ export default function ContactDialog({
   });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const nameRef = useRef<HTMLInputElement | null>(null);
 
-  // 重置表单数据
+// Reset form data
   const resetForm = () => {
     setFormData({ name: "", email: "", phone: "", address: "" });
     setError("");
     setIsSubmitting(false);
   };
 
-  // 打开 Dialog 时初始化数据
+// Initialize data when opening Dialog
   useEffect(() => {
     if (open) {
       if (initialData) {
@@ -56,12 +57,14 @@ export default function ContactDialog({
       } else {
         resetForm();
       }
+      // autofocus name input when dialog opens
+      setTimeout(() => nameRef.current?.focus(), 0);
     }
   }, [initialData, open]);
 
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (error) setError(""); // 清除错误信息
+    if (error) setError(""); // Clear error message when user starts typing
   };
 
   const handleSubmit = async () => {
@@ -110,6 +113,7 @@ export default function ContactDialog({
             <input
               className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter name"
+              ref={nameRef}
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
               disabled={isSubmitting}

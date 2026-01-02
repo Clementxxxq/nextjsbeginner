@@ -125,7 +125,8 @@ export default function Home() {
 
   return (
     <main className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Address Book</h1>
+      <h1 className="text-5xl font-extrabold text-center mb-8">Address Book</h1>
+      {/* Search and Add Button */}
       <div className="mb-6 flex gap-2">
         <input
           type="text"
@@ -157,13 +158,19 @@ export default function Home() {
           <tbody className="divide-y">
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-gray-500">
+                <td
+                  colSpan={6}
+                  className="px-4 py-10 text-center text-gray-500"
+                >
                   Loading...
                 </td>
               </tr>
             ) : contacts.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-gray-400">
+                <td
+                  colSpan={6}
+                  className="px-4 py-10 text-center text-gray-400"
+                >
                   No contacts found. Add your first contact!
                 </td>
               </tr>
@@ -206,19 +213,20 @@ export default function Home() {
           </tbody>
         </table>
       </div>
-
       {/* Pagination */}
-      <div className="flex justify-center items-center mt-6 gap-2">
+      <div className="flex justify-center items-center mt-6 gap-4">
         <Button
           variant="outline"
           disabled={page === 1}
           onClick={() => setPage(page - 1)}
         >
-          Preview
+          Previous
         </Button>
-        <span>
-          Page {page} of {Math.max(1, Math.ceil(total / limit))}
+
+        <span className="text-sm text-gray-600">
+          Page {page} of {Math.max(1, Math.ceil(total / limit))} · Total {total}
         </span>
+
         <Button
           variant="outline"
           disabled={page >= Math.ceil(total / limit)}
