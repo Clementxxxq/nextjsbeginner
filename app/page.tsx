@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import ContactDialog, { ContactFormData } from "@/components/ContactDialog";
-import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
+import ContactDialog, { ContactFormData } from "@/components/dialogs/ContactDialog";
+import DeleteConfirmDialog from "@/components/dialogs/DeleteConfirmDialog";
 import { useEffect, useState } from "react";
 
 type Contact = {

@@ -7,7 +7,7 @@ export const ContactSchema = z.object({
     .max(100, { message: "Name must be at most 100 characters" }),
 
   email: z
-    //.string()  After (v4+)
+    .string()
     .email({ message: "Invalid email address" })
     .optional()
     .or(z.literal("")),
@@ -17,5 +17,8 @@ export const ContactSchema = z.object({
     .min(7, { message: "Phone number must be at least 7 digits" })
     .max(15, { message: "Phone number must be at most 15 digits" }),
 
-  address: z.string().optional(),
+  address: z
+    .string()
+    .optional()
+    .or(z.literal("")),
 });
