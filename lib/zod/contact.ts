@@ -15,10 +15,11 @@ export const ContactSchema = z.object({
   phone: z
     .string()
     .min(7, { message: "Phone number must be at least 7 digits" })
-    .max(15, { message: "Phone number must be at most 15 digits" }),
+    .max(15, { message: "Phone number must be at most 15 digits" })
+    .regex(/^[\d\s-+]+$/, {
+      message: "Phone number can only contain digits, spaces, or dashes",
+    }),
+   // .transform((v) => v.replace(/[\s-]/g, "")),
 
-  address: z
-    .string()
-    .optional()
-    .or(z.literal("")),
+  address: z.string().optional().or(z.literal("")),
 });

@@ -108,7 +108,7 @@ model Contact {
 - [x] ~~Basic UI improvements~~
 - [x] ~~Contact list pagination~~
 - [x] ~~Search function~~
-- [ ] API tests
+- [x] ~~Use zod to verify the format~~
 ---
 
 ## 🧠 What I Learned
