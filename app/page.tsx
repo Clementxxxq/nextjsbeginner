@@ -1,9 +1,19 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import ContactDialog, { ContactFormData } from "@/components/dialogs/ContactDialog";
+import ContactDialog, {
+  ContactFormData,
+} from "@/components/dialogs/ContactDialog";
 import DeleteConfirmDialog from "@/components/dialogs/DeleteConfirmDialog";
 import { useEffect, useState } from "react";
+import {
+  ArrowBigLeft,
+  ArrowBigRight,
+  UserRoundPlus,
+  UserRoundPen,
+  Loader,
+  Trash2,
+} from "lucide-react";
 
 type Contact = {
   id: number;
@@ -96,9 +106,9 @@ export default function Home() {
           // anticipate one more item and jump to last page
           const newTotal = total + 1;
           const lastPage = Math.max(1, Math.ceil(newTotal / limit));
-              setPage(lastPage);
-              // fetch the last page so the new contact appears immediately
-              fetchContacts(searchQuery, lastPage);
+          setPage(lastPage);
+          // fetch the last page so the new contact appears immediately
+          fetchContacts(searchQuery, lastPage);
         } else {
           fetchContacts(searchQuery, page);
         }
@@ -148,15 +158,26 @@ export default function Home() {
     <main className="p-6 max-w-4xl mx-auto">
       <h1 className="text-5xl font-extrabold text-center mb-8">Address Book</h1>
       {/* Search and Add Button */}
-      <div className="mb-6 flex gap-2">
-        <input
-          type="text"
-          placeholder="Search by name or phone number..."
-          value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <Button onClick={openAddDialog}>+ Add Contact</Button>
+      <div className="mb-6 flex gap-2 items-center justify-between">
+        {/* Search input with icon */}
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Search by name or phone number..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Add Contact button */}
+        <Button
+          onClick={openAddDialog}
+          className="flex items-center justify-center gap-2 ml-4"
+        >
+          <UserRoundPlus className="w-5 h-5" />
+          Add Contact
+        </Button>
       </div>
 
       {/* Header */}
@@ -183,6 +204,7 @@ export default function Home() {
                   colSpan={6}
                   className="px-4 py-10 text-center text-gray-500"
                 >
+                  <Loader className="w-6 h-6 mx-auto animate-spin" />
                   Loading...
                 </td>
               </tr>
@@ -213,15 +235,17 @@ export default function Home() {
                         size="sm"
                         variant="outline"
                         onClick={() => openEditDialog(c)}
+                        className="flex items-center justify-center"
                       >
-                        Edit
+                        <UserRoundPen className="w-4 h-4" />
                       </Button>
                       <Button
                         size="sm"
                         variant="destructive"
                         onClick={() => openDeleteDialog(c.id)}
+                        className="flex items-center justify-center"
                       >
-                        Delete
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
                   </td>
@@ -238,7 +262,7 @@ export default function Home() {
           disabled={page === 1}
           onClick={() => setPage(page - 1)}
         >
-          {'<'}
+          <ArrowBigLeft />
         </Button>
 
         <span className="text-sm text-gray-600">
@@ -250,7 +274,7 @@ export default function Home() {
           disabled={page >= Math.ceil(total / limit)}
           onClick={() => setPage(page + 1)}
         >
-          {'>'}
+          <ArrowBigRight />
         </Button>
       </div>
 
