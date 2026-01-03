@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { ContactSchema } from "@/lib/zod/contact";
+import { ContactSchema } from "@/zod/contact";
 
 /**
  * Get /api/contacts

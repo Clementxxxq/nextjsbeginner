@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { use, useEffect, useRef, useState } from "react";
 
-import { ContactSchema } from "@/lib/zod/contact";
+import { ContactSchema } from "@/zod/contact";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { SubmitHandler } from "react-hook-form";

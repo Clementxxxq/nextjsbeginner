@@ -34,7 +34,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const limit = 10;
+  const limit = 8;
 
   const [mode, setMode] = useState<"add" | "edit">("add");
   const [editingId, setEditingId] = useState<number | null>(null);
