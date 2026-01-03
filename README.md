@@ -111,6 +111,7 @@ model Contact {
 - [x] ~~Use zod to verify the format~~
 - [x] ~~Add icon~~
 - [x] ~~Adapt to mobile interface~~
+- [x] ~~Test API~~
 ---
 
 ## 🧠 What I Learned

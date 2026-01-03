@@ -60,10 +60,11 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = await request.json(); //Read the JSON sent from the front end
+    console.log("RAW BODY:", body);
 
-    // Validate request body
-    const parsed = ContactSchema.safeParse(body);
+    const parsed = ContactSchema.safeParse(body); //Use Zod rules to check if the body is valid
+    console.log("ZOD RESULT:", parsed);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -78,12 +79,15 @@ export async function POST(request: Request) {
       data: {
         name,
         phone,
-        email: email || null,
-        address: address || null,
+        email: email ?? null,
+        address: address ?? null,
       },
     });
+
     return NextResponse.json(contact, { status: 201 });
   } catch (error) {
+    console.error("CREATE CONTACT ERROR:", error);
+
     return NextResponse.json(
       { error: "Failed to create contact" },
       { status: 500 }
