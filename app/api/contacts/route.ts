@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { ContactSchema } from "@/lib/zod/contact";
 
 /**
  * Get /api/contacts
@@ -55,26 +56,34 @@ export async function GET(request: Request) {
 /**
  * post /api/contacts
  * @returns The newly created contact.
+ * Validates the request body using Zod schema.
  */
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, phone } = body;
 
-    if (!name) {
-      return NextResponse.json({ error: "Name is required" }, { status: 400 });
+    // Validate request body
+    const parsed = ContactSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
     }
+
+    const {name, email, phone, address} = parsed.data;
 
     const contact = await prisma.contact.create({
       data: {
         name,
-        email,
         phone,
-       address: body.address || null,
+        email: email || null,
+        address: address || null,
       },
     });
-
     return NextResponse.json(contact, { status: 201 });
+
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to create contact" },

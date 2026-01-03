@@ -8,13 +8,18 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
+
+import { ContactSchema } from "@/lib/zod/contact";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { SubmitHandler } from "react-hook-form";
 
 export type ContactFormData = {
   name: string;
-  email: string;
+  email?: string;
   phone: string;
-  address: string;
+  address?: string;
 };
 
 type Props = {
@@ -32,36 +37,39 @@ export default function ContactDialog({
   initialData,
   mode,
 }: Props) {
-  const [formData, setFormData] = useState<ContactFormData>({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
+  const form = useForm<ContactFormData>({
+    resolver: zodResolver(ContactSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+    },
   });
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const nameRef = useRef<HTMLInputElement | null>(null);
 
-// Reset form data
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = form;
+
+  /*
+  // Reset form data
   const resetForm = () => {
     setFormData({ name: "", email: "", phone: "", address: "" });
     setError("");
     setIsSubmitting(false);
   };
-
-// Initialize data when opening Dialog
+*/
+  // Initialize data when opening Dialog
   useEffect(() => {
     if (open) {
-      if (initialData) {
-        setFormData(initialData);
-      } else {
-        resetForm();
-      }
-      // autofocus name input when dialog opens
-      setTimeout(() => nameRef.current?.focus(), 0);
+      reset(initialData ?? { name: "", email: "", phone: "", address: "" });
     }
-  }, [initialData, open]);
+  }, [open, initialData, reset]);
 
+  /*
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (error) setError(""); // Clear error message when user starts typing
@@ -88,9 +96,15 @@ export default function ContactDialog({
     resetForm();
     onClose();
   };
+  */
+
+  const submit: SubmitHandler<ContactFormData> = async (data) => {
+    await onSubmit(data);
+    onClose();
+  };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
@@ -98,77 +112,79 @@ export default function ContactDialog({
           </DialogTitle>
         </DialogHeader>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
-            {error}
-          </div>
-        )}
-
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit(submit)} className="space-y-4">
+          {/* Name */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Name <span className="text-red-500">*</span>
             </label>
-
             <input
+              {...register("name")}
               className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter name"
-              ref={nameRef}
-              value={formData.name}
-              onChange={(e) => handleInputChange("name", e.target.value)}
-              disabled={isSubmitting}
             />
+            {errors.name && (
+              <p className="text-sm text-red-500">{errors.name.message}</p>
+            )}
           </div>
+
+          {/* Email */}
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
-              type="email"
+              {...register("email")}
               className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter email"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              disabled={isSubmitting}
             />
+            {errors.email && (
+              <p className="text-sm text-red-500">{errors.email.message}</p>
+            )}
           </div>
+
+          {/* Phone*/}
           <div>
             <label className="block text-sm font-medium mb-1">Phone</label>
             <input
-              type="tel"
+              {...register("phone")}
               className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter phone number"
-              value={formData.phone}
-              onChange={(e) => handleInputChange("phone", e.target.value)}
-              disabled={isSubmitting}
             />
+            {errors.phone && (
+              <p className="text-sm text-red-500">{errors.phone.message}</p>
+            )}
           </div>
+
+          {/* Address */}
           <div>
             <label className="block text-sm font-medium mb-1">Address</label>
             <input
+              {...register("address")}
               className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter address"
-              value={formData.address}
-              onChange={(e) => handleInputChange("address", e.target.value)}
-              disabled={isSubmitting}
             />
+            {errors.address && (
+              <p className="text-sm text-red-500">{errors.address.message}</p>
+            )}
           </div>
-        </div>
 
-        <DialogFooter className="gap-2">
-          <Button
-            variant="outline"
-            onClick={handleClose}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting
-              ? "Saving..."
-              : mode === "add"
-              ? "Add Contact"
-              : "Save Changes"}
-          </Button>
-        </DialogFooter>
+          <DialogFooter className="gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting
+                ? "Saving..."
+                : mode === "add"
+                ? "Add Contact"
+                : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
