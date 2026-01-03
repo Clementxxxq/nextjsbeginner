@@ -96,7 +96,9 @@ export default function Home() {
           // anticipate one more item and jump to last page
           const newTotal = total + 1;
           const lastPage = Math.max(1, Math.ceil(newTotal / limit));
-          setPage(lastPage);
+              setPage(lastPage);
+              // fetch the last page so the new contact appears immediately
+              fetchContacts(searchQuery, lastPage);
         } else {
           fetchContacts(searchQuery, page);
         }
@@ -217,10 +219,7 @@ export default function Home() {
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={() => {
-                        {'<'}
-                          setDeleteOpen(true);
-                        }}
+                        onClick={() => openDeleteDialog(c.id)}
                       >
                         Delete
                       </Button>
