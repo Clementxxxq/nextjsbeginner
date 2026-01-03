@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const {name, email, phone, address} = parsed.data;
+    const { name, email, phone, address } = parsed.data;
 
     const contact = await prisma.contact.create({
       data: {
@@ -83,7 +83,6 @@ export async function POST(request: Request) {
       },
     });
     return NextResponse.json(contact, { status: 201 });
-
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to create contact" },

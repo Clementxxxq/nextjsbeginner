@@ -19,7 +19,7 @@ export const ContactSchema = z.object({
     .regex(/^[\d\s-+]+$/, {
       message: "Phone number can only contain digits, spaces, or dashes",
     }),
-   // .transform((v) => v.replace(/[\s-]/g, "")),
+  // .transform((v) => v.replace(/[\s-]/g, "")),
 
   address: z.string().optional().or(z.literal("")),
 });

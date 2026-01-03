@@ -109,6 +109,8 @@ model Contact {
 - [x] ~~Contact list pagination~~
 - [x] ~~Search function~~
 - [x] ~~Use zod to verify the format~~
+- [x] ~~Add icon~~
+- [x] ~~Adapt to mobile interface~~
 ---
 
 ## 🧠 What I Learned

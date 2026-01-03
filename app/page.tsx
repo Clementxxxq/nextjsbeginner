@@ -185,75 +185,81 @@ export default function Home() {
 
       {/* Table Card */}
       <div className="overflow-hidden rounded-lg border bg-white shadow-sm">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-600">
-            <tr>
-              <th className="px-4 py-3 text-left w-12">No.</th>
-              <th className="px-4 py-3 text-left">Name</th>
-              <th className="px-4 py-3 text-left">Phone</th>
-              <th className="px-4 py-3 text-left">Email</th>
-              <th className="px-4 py-3 text-left">Address</th>
-              <th className="px-4 py-3 text-right">Actions</th>
-            </tr>
-          </thead>
+        {/* Allow table to scroll horizontally */}
+        <div className="overflow-x-auto">
+          {"Allow table to scroll horizontally"}
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-gray-600">
+              <tr>
+                <th className="px-4 py-3 text-left w-12">No.</th>
+                <th className="px-4 py-3 text-left">Name</th>
+                <th className="px-4 py-3 text-left">Phone</th>
+                <th className="px-4 py-3 text-left">Email</th>
+                <th className="px-4 py-3 text-left">Address</th>
+                <th className="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
 
-          <tbody className="divide-y">
-            {loading ? (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="px-4 py-10 text-center text-gray-500"
-                >
-                  <Loader className="w-6 h-6 mx-auto animate-spin" />
-                  Loading...
-                </td>
-              </tr>
-            ) : contacts.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="px-4 py-10 text-center text-gray-400"
-                >
-                  No contacts found. Add your first contact!
-                </td>
-              </tr>
-            ) : (
-              contacts.map((c, index) => (
-                <tr key={c.id} className="hover:bg-gray-50 transition">
-                  <td className="px-4 py-3 text-gray-500">
-                    {(page - 1) * limit + index + 1}
-                  </td>
-                  <td className="px-4 py-3 font-medium">{c.name}</td>
-                  <td className="px-4 py-3">{c.phone}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.email || "-"}</td>
-                  <td className="px-4 py-3 text-gray-600">
-                    {c.address || "-"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2 justify-end">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => openEditDialog(c)}
-                        className="flex items-center justify-center"
-                      >
-                        <UserRoundPen className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => openDeleteDialog(c.id)}
-                        className="flex items-center justify-center"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+            <tbody className="divide-y">
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="px-4 py-10 text-center text-gray-500"
+                  >
+                    <Loader className="w-6 h-6 mx-auto animate-spin" />
+                    Loading...
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : contacts.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="px-4 py-10 text-center text-gray-400"
+                  >
+                    No contacts found. Add your first contact!
+                  </td>
+                </tr>
+              ) : (
+                contacts.map((c, index) => (
+                  <tr key={c.id} className="hover:bg-gray-50 transition">
+                    <td className="px-4 py-3 text-gray-500">
+                      {(page - 1) * limit + index + 1}
+                    </td>
+                    <td className="px-4 py-3 font-medium">{c.name}</td>
+                    <td className="px-4 py-3">{c.phone}</td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {c.email || "-"}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {c.address || "-"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2 justify-end">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openEditDialog(c)}
+                          className="flex items-center justify-center"
+                        >
+                          <UserRoundPen className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => openDeleteDialog(c.id)}
+                          className="flex items-center justify-center"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
       {/* Pagination */}
       <div className="flex justify-center items-center mt-8 gap-4">
