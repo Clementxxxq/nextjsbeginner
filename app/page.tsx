@@ -187,7 +187,6 @@ export default function Home() {
       <div className="overflow-hidden rounded-lg border bg-white shadow-sm">
         {/* Allow table to scroll horizontally */}
         <div className="overflow-x-auto">
-          {"Allow table to scroll horizontally"}
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600">
               <tr>
