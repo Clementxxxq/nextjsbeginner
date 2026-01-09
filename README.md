@@ -86,7 +86,31 @@ model Contact {
 ```
 ---
 
-## 🛠️ TODO (In Progress / Planned)
+## 📸 Application Interface
+
+### Main Page
+![Address Book Application](docs/address-book-screenshot.png)
+
+### Add New Contact
+![Add New Contact Dialog](docs/add-contact-dialog.png)
+
+### Edit Contact
+![Edit Contact Dialog](docs/edit-contact-dialog.png)
+
+### Delete Contact
+![Delete Contact Confirmation](docs/delete-contact-dialog.png)
+
+**Application Features:**
+- **Search Functionality** – Search contacts by name or phone number
+- **Pagination** – Display 8 records per page
+- **Add Contact** – Create new contact with name, email, phone, and address
+- **Edit Contact** – Update existing contact information
+- **Delete Contact** – Remove contacts with confirmation dialog
+- **Data Display** – Name, phone, email, and address
+
+---
+
+## �🛠️ TODO (In Progress / Planned)
 
 - [x] ~~Create Next.js project~~
 - [x] ~~Deploy to Vercel~~
