@@ -89,13 +89,13 @@ model Contact {
 ## 📸 Application Interface
 
 ### Main Page
-![Address Book Application](docs/address-book-screenshot.png.png)
+![Address Book Application](docs/address-book-screenshot.png)
 
 ### Add New Contact
-![Add New Contact Dialog](docs/add-contact-dialog.png.png)
+![Add New Contact Dialog](docs/add-contact-dialog.png)
 
 ### Edit Contact
-![Edit Contact Dialog](docs/edit-contact-dialog.png.png)
+![Edit Contact Dialog](docs/edit-contact-dialog.png)
 
 ### Delete Contact
 ![Delete Contact Confirmation](docs/delete-contact-dialog.png)
