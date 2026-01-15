@@ -10,6 +10,6 @@ export default defineConfig({
     seed: `tsx src/prisma/seed.ts`,
   },
   datasource: {
-    url: env('DATABASE_URL'),
+    url: env('DATABASE_URL') || 'postgresql://user:password@localhost:5432/db',
   },
 });
